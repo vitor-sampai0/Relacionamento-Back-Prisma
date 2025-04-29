@@ -1,5 +1,6 @@
 import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 class AuthController {
   // Listar todos os usuários
@@ -46,6 +47,45 @@ class AuthController {
         res.status(500).json({ error: "Erro ao criar um novo usuário" });
     }
   }
+  async login (req, res) {
+    try {
+        const { email, password } = req.body;
 
+        if (!email || !password) {
+            return res.status(400).json({ error: "Os campos email e senha são obrigatórios" });
+          }
+
+           // Verifica se o usuário já existe
+        const userExist = await userModel.findByEmail(email);
+        if (!userExist) {
+          return res.status(401).json({ error: "Credenciais inválidas" });
+        }
+        // Verificar senha
+        const isPasswordValid = await bcrypt.compare(password, userExist.password);
+        if (!isPasswordValid) {
+          return res.status(401).json({ error: "Credenciais inválidas" });
+        }
+
+        //gerar token
+        const token = jwt.sign({
+          id: userExist.id,
+          name: userExist.name,
+          email: userExist.email,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "24h",
+        }
+      );
+      return res.json({
+        mssage: "Login realizado com sucesso",
+        token,
+        userExist,
+      });
+    } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        res.status(500).json({ error: "Erro ao fazer login" });
+    }
+  }
 }
 export default new AuthController();
