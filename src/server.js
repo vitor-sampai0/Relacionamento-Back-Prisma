@@ -2,6 +2,7 @@ import express from "express";
 import { config } from "dotenv";
 import cors from "cors"; // Importa o middleware CORS
 
+import authRouter from "./routes/auth.routes.js";
 import animesRouter from "./routes/animeRoutes.js";
 import collectionRouter from "./routes/collectionRoutes.js";
 import cardRouter from './routes/cardRouter.js';
@@ -18,6 +19,7 @@ app.use(express.json()); // Parse de JSON
 app.use("/animes", animesRouter); // Usar as rotas de animes
 app.use("/colecoes", collectionRouter); // Usar as rotas de coleções
 app.use("/cards", cardRouter); // Usar as rotas de cards
+app.use("/auth", authRouter); // Usar as rotas de autenticação
 
 // Rota base para verificar se o servidor está rodando
 app.get("/", (req, res) => {

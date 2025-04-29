@@ -43,7 +43,7 @@ class AuthController {
         });
     } catch (error) {
         console.error("Erro ao criar um novo usuário:", error);
-        res.statur(500).json({ error: "Erro ao criar um novo usuário" });
+        res.status(500).json({ error: "Erro ao criar um novo usuário" });
     }
   }
 
