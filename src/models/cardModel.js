@@ -10,6 +10,11 @@ class CardModel {
     if(raridade) {
       where.rarity = raridade
     }
+    if(ataque) {
+      where.attackPoints = {
+        gte: Number(ataque),
+      }
+    }
 
     const cards = await prisma.card.findMany({
       // where: {
